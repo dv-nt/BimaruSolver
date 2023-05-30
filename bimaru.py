@@ -3,8 +3,8 @@
 # Além das funções e classes já definidas, podem acrescentar outras que considerem pertinentes.
 
 # Grupo 00:
-# 00000 Nome1
-# 00000 Nome2
+# 103796 Tomás Sobral Teixeira
+# 103378 Bernardo Cunha Meireles
 
 import sys
 from search import (
