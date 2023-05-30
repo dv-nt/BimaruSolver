@@ -46,6 +46,7 @@ class Board:
         self.unplaced_threes = 2
         self.unplaced_fours = 1
         self.to_run_m_hints = []
+        self.unknwon_boats = []
 
     def set_value(self, row: int, col: int, value: str):
 #         print("""
@@ -53,13 +54,16 @@ class Board:
 #         """)
 #         self.print_board()
         """Atribui o valor na respetiva posição do tabuleiro."""
-        if self.get_value(row, col) in ["t", "T", "b", "B", "c", "C", "m", "M", "l", "L", "r", "R"]:
-            return
+        
         if row >= 0 and row <= 9 and col >= 0 and col <= 9:
+            if self.get_value(row, col) in ["t", "T", "b", "B", "c", "C", "m", "M", "l", "L", "r", "R"]:
+                return
             if value not in ["W", "."] and self.get_value(row, col) not in "?":
                 self.row_info[row] = self.row_info[row] - 1
                 self.col_info[col] = self.col_info[col] - 1
             self.cells[row][col] = value
+            if value == "?":
+                self.unknwon_boats.append((row, col))
         
 
     def get_value(self, row: int, col: int) -> str:
