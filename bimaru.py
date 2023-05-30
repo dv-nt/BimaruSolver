@@ -48,10 +48,10 @@ class Board:
         self.to_run_m_hints = []
 
     def set_value(self, row: int, col: int, value: str):
-        print("""
-==============================
-        """)
-        self.print_board()
+#         print("""
+# ==============================
+#         """)
+#         self.print_board()
         """Atribui o valor na respetiva posição do tabuleiro."""
         if self.get_value(row, col) in ["t", "T", "b", "B", "c", "C", "m", "M", "l", "L", "r", "R"]:
             return
@@ -102,12 +102,12 @@ class Board:
             self.set_value(row + coordinate[0], col + coordinate[1], ".")
 
     def m_hint(self, row: int, col: int):
-        print(self.get_value(row, col - 1))
+        # print(self.get_value(row, col - 1))
 
-        print(self.get_value(row + 1, col))
-        print(self.get_value(row - 1, col))
-        print(self.get_value(row, col + 1))
-        print(self.get_value(row, col - 1))
+        # print(self.get_value(row + 1, col))
+        # print(self.get_value(row - 1, col))
+        # print(self.get_value(row, col + 1))
+        # print(self.get_value(row, col - 1))
 
 
         if self.is_water(row + 1, col) or self.is_water(row - 1, col):
@@ -235,6 +235,10 @@ class Board:
         if not from_fill_water:
             self.fill_water()
 
+    def handle_boats(self):
+        # turns ? into the actual letter
+        pass
+
     def handle_m_queue(self):
         for hint in board.to_run_m_hints:
             board.m_hint(hint[0], hint[1])
@@ -334,4 +338,5 @@ if __name__ == "__main__":
     board.fill_water()
     board.handle_m_queue()
     board.fill_water()
+    board.handle_boats()
     board.print_board()
