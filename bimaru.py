@@ -56,8 +56,11 @@ class Board:
             self.cells[row][col] = value
 
     def get_value(self, row: int, col: int) -> str:
+        #print("ESTA NO GET VALUE")
+        #print(row, col)
         """Devolve o valor na respetiva posição do tabuleiro."""
-        return self.cells[row][col]
+        if row >= 0 and row <= 9 and col >= 0 and col <= 9:
+            return self.cells[row][col]
 
     def is_empty(self, row: int, col: int) -> bool:
         """Devolve True se a posição estiver vazia."""
@@ -92,8 +95,6 @@ class Board:
             self.set_value(row + coordinate[0], col + coordinate[1], ".")
 
     def m_hint(self, row: int, col: int):
-        print("a")
-        
         print(self.get_value(row, col - 1))
 
         print(self.get_value(row + 1, col))
@@ -103,7 +104,6 @@ class Board:
 
 
         if self.is_water(row + 1, col) or self.is_water(row - 1, col):
-            print("horziontal")
             # barco é horizontal
             if self.unplaced_fours == 0:
                 self.unplaced_threes -= 1
@@ -130,7 +130,6 @@ class Board:
             self.set_value(row + 1, col + 2, ".")
 
         elif self.is_water(row, col + 1) or self.is_water(row, col - 1):
-            print("vertical")
             if self.unplaced_fours == 0:
                 self.unplaced_threes -= 1
                 self.set_value(row - 1, col, "t")
@@ -204,9 +203,9 @@ class Board:
                         if self.is_empty(x[0], x[1]):
                             self.set_value(x[0], x[1], ".")
 
-        self.check_boats(True)
+        self.check_boat_spots(True)
 
-    def check_boats(self, from_fill_water=False):
+    def check_boat_spots(self, from_fill_water=False):
         changed = False
         for row_index, row in enumerate(self.cells):
             if self.row_info[row_index] == self.cells[row_index].count(" ") != 0:
@@ -224,7 +223,7 @@ class Board:
                         self.set_value(row_index, col_index, "?")
 
         if changed:
-            self.check_boats()
+            self.check_boat_spots()
 
         if not from_fill_water:
             self.fill_water()
@@ -262,11 +261,9 @@ class Board:
 
         for hint in range(int(hint_info[0])):
             hintLine = stdin.readline().split()
-            print("hint #" + str(hint) + "   " + " ".join(hintLine))
-            print(hintLine[1])
-            print(hintLine[2])
-            print(hintLine[3])
+
             board.set_value(int(hintLine[1]), int(hintLine[2]), hintLine[3])
+
             if hintLine[3] == "C":
                 board.c_hint(int(hintLine[1]), int(hintLine[2]))
             elif hintLine[3] == "T":
@@ -331,9 +328,3 @@ if __name__ == "__main__":
     board.handle_m_queue()
     board.fill_water()
     board.print_board()
-    
-    # print(board.adjacent_vertical_values(3, 3))
-    # print(board.adjacent_horizontal_values(3, 3))
-
-    # print(board.adjacent_vertical_values(1, 0))
-    # print(board.adjacent_horizontal_values(1, 0))
