@@ -51,8 +51,8 @@ class Board:
         """Atribui o valor na respetiva posição do tabuleiro."""
         if row >= 0 and row <= 9 and col >= 0 and col <= 9:
             if value not in ["W", "."]:
-                self.row_info[row] = str(int(self.row_info[row]) - 1)
-                self.col_info[col] = str(int(self.col_info[col]) - 1)
+                self.row_info[row] = self.row_info[row] - 1
+                self.col_info[col] = self.col_info[col] - 1
             self.cells[row][col] = value
 
     def get_value(self, row: int, col: int) -> str:
@@ -188,11 +188,11 @@ class Board:
 
     def fill_water(self):
         for row in range(len(self.row_info)):
-            if self.row_info[row] == "0":
+            if self.row_info[row] == 0:
                 self.cells[row] = [x if x != " " else "." for x in self.cells[row]]
 
         for col in range(len(self.col_info)):
-            if self.col_info[col] == "0":
+            if self.col_info[col] == 0:
                 for row in range(len(self.cells)):
                     if self.cells[row][col] == " ":
                         self.cells[row][col] = "."
@@ -204,14 +204,39 @@ class Board:
                         if self.is_empty(x[0], x[1]):
                             self.set_value(x[0], x[1], ".")
 
+        self.check_boats(True)
+
+    def check_boats(self, from_fill_water=False):
+        changed = False
+        for row_index, row in enumerate(self.cells):
+            if self.row_info[row_index] == self.cells[row_index].count(" ") != 0:
+                    changed = True
+                    for col_index, col in enumerate(row):
+                        if self.get_value(row_index, col_index) == " ":
+                            self.set_value(row_index, col_index, "?")
+
+        for col_index in range(len(self.cells[0])):
+            col_values = [self.get_value(row_index, col_index) for row_index in range(len(self.cells))]
+            if self.col_info[col_index] == col_values.count(" ") != 0:
+                changed = True
+                for row_index in range(len(self.cells)):
+                    if self.get_value(row_index, col_index) == " ":
+                        self.set_value(row_index, col_index, "?")
+
+        if changed:
+            self.check_boats()
+
+        if not from_fill_water:
+            self.fill_water()
+
     def handle_m_queue(self):
         for hint in board.to_run_m_hints:
             board.m_hint(hint[0], hint[1])
 
     def print_board(self):
-        print("  " + " ".join(self.col_info))
+        print("  " + " ".join([str(x) for x in self.col_info]))
         for i in range(len(self.cells)):
-            print(self.row_info[i] + " " + " ".join(self.cells[i]))
+            print(str(self.row_info[i]) + " " + " ".join(self.cells[i]))
 
     @staticmethod
     def parse_instance():
@@ -227,8 +252,8 @@ class Board:
         
         board = Board()
 
-        board.row_info = stdin.readline().split()[1:]
-        board.col_info = stdin.readline().split()[1:]
+        board.row_info = [int (x) for x in stdin.readline().split()[1:]]
+        board.col_info = [int(x) for x in stdin.readline().split()[1:]]
 
         hint_info = stdin.readline().split()
 
