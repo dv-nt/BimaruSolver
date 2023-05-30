@@ -69,6 +69,7 @@ class Board:
         return (self.cells[row][col - 1] if col != 0 else None, self.cells[row][col + 1] if col != 9 else None)
 
     def c_hint(self, row: int, col: int):
+        self.unplaced_ones -= 1
         surroundings = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
         for coordinate in surroundings:
             self.set_value(row + coordinate[0], col + coordinate[1], ".")
