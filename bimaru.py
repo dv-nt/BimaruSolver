@@ -45,6 +45,7 @@ class Board:
         self.unplaced_twos = 3
         self.unplaced_threes = 2
         self.unplaced_fours = 1
+        self.to_run_m_hints = []
 
     def set_value(self, row: int, col: int, value: str):
         """Atribui o valor na respetiva posição do tabuleiro."""
@@ -58,6 +59,18 @@ class Board:
         """Devolve o valor na respetiva posição do tabuleiro."""
         return self.cells[row][col]
 
+    def is_empty(self, row: int, col: int) -> bool:
+        """Devolve True se a posição estiver vazia."""
+        if row > 9 or row < 0 or col > 9 or col < 0:
+            return False
+        return self.cells[row][col] == " "
+    
+    def is_water(self, row: int, col: int) -> bool:
+        """Devolve True se a posição estiver vazia."""
+        if row > 9 or row < 0 or col > 9 or col < 0:
+            return False
+        return self.cells[row][col] in ["W", "."]
+
     def adjacent_vertical_values(self, row: int, col: int) -> (str, str):
         """Devolve os valores imediatamente acima e abaixo,
         respectivamente."""
@@ -68,6 +81,10 @@ class Board:
         respectivamente."""
         return (self.cells[row][col - 1] if col != 0 else None, self.cells[row][col + 1] if col != 9 else None)
 
+    def get_surroundings(self, row: int, col: int) -> list:
+        surroundings = [(-1, -1), (-1, 0), (-1, -1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        return [(row + surrounding[0], col + surrounding[1]) for surrounding in surroundings if (row + surrounding[0] >= 0 and row + surrounding[0] <= 9) and (col + surrounding[1] >= 0 and col + surrounding[1] <= 9)]
+
     def c_hint(self, row: int, col: int):
         self.unplaced_ones -= 1
         surroundings = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
@@ -75,7 +92,75 @@ class Board:
             self.set_value(row + coordinate[0], col + coordinate[1], ".")
 
     def m_hint(self, row: int, col: int):
-        pass
+        print("a")
+        
+        print(self.get_value(row, col - 1))
+
+        print(self.get_value(row + 1, col))
+        print(self.get_value(row - 1, col))
+        print(self.get_value(row, col + 1))
+        print(self.get_value(row, col - 1))
+
+
+        if self.is_water(row + 1, col) or self.is_water(row - 1, col):
+            print("horziontal")
+            # barco é horizontal
+            if self.unplaced_fours == 0:
+                self.unplaced_threes -= 1
+                self.set_value(row, col - 1, "l")
+                self.set_value(row, col + 1, "r")
+
+                self.set_value(row, col - 2, ".")
+                self.set_value(row, col + 2, ".")
+
+            else:
+                self.set_value(row, col - 1, "?")
+                self.set_value(row, col + 1, "?")
+
+            self.set_value(row - 1, col -2, ".")
+            self.set_value(row - 1, col - 1, ".")
+            self.set_value(row - 1, col, ".")
+            self.set_value(row - 1, col + 1, ".")
+            self.set_value(row - 1, col + 2, ".")
+
+            self.set_value(row + 1, col -2, ".")
+            self.set_value(row + 1, col - 1, ".")
+            self.set_value(row + 1, col, ".")
+            self.set_value(row + 1, col + 1, ".")
+            self.set_value(row + 1, col + 2, ".")
+
+        elif self.is_water(row, col + 1) or self.is_water(row, col - 1):
+            print("vertical")
+            if self.unplaced_fours == 0:
+                self.unplaced_threes -= 1
+                self.set_value(row - 1, col, "t")
+                self.set_value(row + 1, col, "b")
+
+                self.set_value(row - 2, col, ".")
+                self.set_value(row + 2, col, ".")
+            else:
+                self.set_value(row - 1, col, "?")
+                self.set_value(row + 1, col, "?")
+
+            self.set_value(row - 2, col - 1, ".")
+            self.set_value(row - 1, col - 1, ".")
+            self.set_value(row, col - 1, ".")
+            self.set_value(row + 1, col - 1, ".")
+            self.set_value(row + 2, col - 1, ".")
+
+            self.set_value(row - 2, col + 1, ".")
+            self.set_value(row - 1, col + 1, ".")
+            self.set_value(row, col + 1, ".")
+            self.set_value(row + 1, col + 1, ".")
+            self.set_value(row + 2, col + 1, ".")
+
+
+
+
+
+
+
+
     
     def t_hint(self, row: int, col: int):
         water_surroundings = [(2, -1), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1)]
@@ -111,6 +196,17 @@ class Board:
                 for row in range(len(self.cells)):
                     if self.cells[row][col] == " ":
                         self.cells[row][col] = "."
+
+        for row_index, row in enumerate(self.cells):
+            for col_index, cell in enumerate(row):
+                if cell in ["t", "b", "l", "r", "m"]:
+                    for x in self.get_surroundings(row_index, col_index):
+                        if self.is_empty(x[0], x[1]):
+                            self.set_value(x[0], x[1], ".")
+
+    def handle_m_queue(self):
+        for hint in board.to_run_m_hints:
+            board.m_hint(hint[0], hint[1])
 
     def print_board(self):
         print("  " + " ".join(self.col_info))
@@ -152,6 +248,13 @@ class Board:
                 board.t_hint(int(hintLine[1]), int(hintLine[2]))
             elif hintLine[3] == "B":
                 board.b_hint(int(hintLine[1]), int(hintLine[2]))
+            elif hintLine[3] == "R":
+                board.r_hint(int(hintLine[1]), int(hintLine[2]))
+            elif hintLine[3] == "L":
+                board.l_hint(int(hintLine[1]), int(hintLine[2]))
+            elif hintLine[3] == "M":
+                board.to_run_m_hints.append((int(hintLine[1]), int(hintLine[2])))
+        
 
         return board
 
@@ -199,6 +302,8 @@ if __name__ == "__main__":
     # Retirar a solução a partir do nó resultante,
     # Imprimir para o standard output no formato indicado.
     board = Board().parse_instance()
+    board.fill_water()
+    board.handle_m_queue()
     board.fill_water()
     board.print_board()
     
