@@ -349,8 +349,8 @@ class Board:
                         print("ESTA AQUI 3333")
                         adjacent_verticals = self.adjacent_vertical_values(middle[0], middle[1])
                         if all([x == "?" for x in adjacent_verticals]) and \
-                                self.get_value(middle[0] - 2, middle[1]) in [".", None] and \
-                                self.get_value(middle[0] + 2, middle[1]) in [".", None]:
+                                self.get_value(middle[0] - 2, middle[1]) in [".", "W", None] and \
+                                self.get_value(middle[0] + 2, middle[1]) in [".", "W", None]:
                             
                             self.set_value(middle[0] - 1, middle[1], "t")
                             self.set_value(middle[0] + 1, middle[1], "b")
@@ -359,8 +359,8 @@ class Board:
                         
                         adjacent_horizontals = self.adjacent_horizontal_values(middle[0], middle[1])
                         if all([x == "?" for x in adjacent_horizontals]) and \
-                                self.get_value(middle[0], middle[1] - 2) in [".", None] and \
-                                self.get_value(middle[0], middle[1] + 2) in [".", None]:
+                                self.get_value(middle[0], middle[1] - 2) in [".", "W", None] and \
+                                self.get_value(middle[0], middle[1] + 2) in [".", "W",None]:
 
                             
                             self.set_value(middle[0], middle[1] - 1, "l")
