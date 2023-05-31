@@ -47,6 +47,7 @@ class Board:
         self.unplaced_fours = 1
         self.to_run_m_hints = []
         self.unknwon_boats = []
+        self.middle_pieces = []
 
     def set_value(self, row: int, col: int, value: str):
 #         print("""
@@ -64,6 +65,8 @@ class Board:
             self.cells[row][col] = value
             if value == "?":
                 self.unknwon_boats.append((row, col))
+            elif value in ["m", "M"]:
+                self.middle_pieces.append((row, col))
         
 
     def get_value(self, row: int, col: int) -> str:
@@ -240,8 +243,190 @@ class Board:
             self.fill_water()
 
     def handle_boats(self):
-        # turns ? into the actual letter
-        pass
+        for boat in self.unknwon_boats:
+            if self.get_value(boat[0], boat[1]) == "?":
+                if self.unplaced_ones > 0:
+                    if all([self.is_water(x[0], x[1]) for x in self.get_surroundings(boat[0], boat[1])]):
+                        self.set_value(boat[0], boat[1], "c")
+                        self.unplaced_ones -= 1
+
+                if self.unplaced_fours > 0:
+                    # top piece
+                    if self.get_value(boat[0] - 1, boat[1]) in [".", "W", None] and \
+                        self.get_value(boat[0] + 1, boat[1]) in ["m", "M", "?"] and \
+                        self.get_value(boat[0] + 2, boat[1]) in ["m", "M", "?"] and \
+                        self.get_value(boat[0] + 3, boat[1]) in ["b", "B", "?"]:
+
+                        self.set_value(boat[0], boat[1], "t")
+                        self.set_value(boat[0] + 1, boat[1], "m")
+                        self.set_value(boat[0] + 2, boat[1], "m")
+                        self.set_value(boat[0] + 3, boat[1], "b")
+                        self.unplaced_fours -= 1
+                    
+                    # bottom piece
+                    elif self.get_value(boat[0] + 1, boat[1]) in [".", "W", None] and \
+                            self.get_value(boat[0] - 1, boat[1]) in ["m", "M", "?"] and \
+                            self.get_value(boat[0] - 2, boat[1]) in ["m", "M", "?"] and \
+                            self.get_value(boat[0] - 3, boat[1]) in ["t", "T", "?"]:
+
+                        self.set_value(boat[0], boat[1], "b")
+                        self.set_value(boat[0] - 1, boat[1], "m")
+                        self.set_value(boat[0] - 2, boat[1], "m")
+                        self.set_value(boat[0] - 3, boat[1], "t")
+                        self.unplaced_fours -= 1
+
+                    # top middle piece
+                    elif self.get_value(boat[0] - 1, boat[1]) in ["t", "T", "?"] and \
+                            self.get_value(boat[0] + 1, boat[1]) in ["m", "M", "?"] and \
+                            self.get_value(boat[0] + 2, boat[1]) in ["b", "B", "?"]:
+                        
+                        self.set_value(boat[0], boat[1], "m")
+                        self.set_value(boat[0] - 1, boat[1, "t"])
+                        self.set_value(boat[0] + 1, boat[1], "m")
+                        self.set_value(boat[0] + 2, boat[1], "b")
+                        self.unplaced_fours -= 1
+
+                    # bottom middle piece
+                    elif self.get_value(boat[0] + 1, boat[1]) in ["b", "B", "?"] and \
+                            self.get_value(boat[0] - 1, boat[1]) in ["m", "M", "?"] and \
+                            self.get_value(boat[0] - 2, boat[1]) in ["t", "T", "?"]:
+
+                        self.set_value(boat[0], boat[1], "m")
+                        self.set_value(boat[0] + 1, boat[1], "b")
+                        self.set_value(boat[0] - 1, boat[1], "m")
+                        self.set_value(boat[0] - 2, boat[1], "t")
+                        self.unplaced_fours -= 1
+
+                    # left piece
+                    if self.get_value(boat[0], boat[1] - 1) in [".", "W", None] and \
+                            self.get_value(boat[0], boat[1] + 1) in ["m", "M", "?"] and \
+                            self.get_value(boat[0], boat[1] + 2) in ["m", "M", "?"] and \
+                            self.get_value(boat[0], boat[1] + 3) in ["r", "R", "?"]:
+
+                        self.set_value(boat[0], boat[1], "l")
+                        self.set_value(boat[0], boat[1] + 1, "m")
+                        self.set_value(boat[0], boat[1] + 2, "m")
+                        self.set_value(boat[0], boat[1] + 3, "r")
+                        self.unplaced_fours -= 1
+
+                    # left middle piece
+                    elif self.get_value(boat[0], boat[1] - 1) in ["l", "L", "?"] and \
+                            self.get_value(boat[0], boat[1] + 1) in ["m", "M", "?"] and \
+                            self.get_value(boat[0], boat[1] + 2) in ["r", "R", "?"]:
+
+                        self.set_value(boat[0], boat[1], "m")
+                        self.set_value(boat[0], boat[1] - 1, "l")
+                        self.set_value(boat[0], boat[1] + 1, "m")
+                        self.set_value(boat[0], boat[1] + 2, "r")
+                        self.unplaced_fours -= 1
+
+                    # middle right piece
+                    elif self.get_value(boat[0], boat[1] + 1) in ["r", "R", "?"] and \
+                            self.get_value(boat[0], boat[1] - 1) in ["m", "M", "?"] and \
+                            self.get_value(boat[0], boat[1] - 2) in ["l", "L", "?"]:
+
+                        self.set_value(boat[0], boat[1], "m")
+                        self.set_value(boat[0], boat[1] + 1, "r")
+                        self.set_value(boat[0], boat[1] - 1, "m")
+                        self.set_value(boat[0], boat[1] - 2, "l")
+                        self.unplaced_fours -= 1
+
+                    # right piece
+                    elif self.get_value(boat[0], boat[1] + 1) in [".", "W", None] and \
+                            self.get_value(boat[0], boat[1] - 1) in ["m", "M", "?"] and \
+                            self.get_value(boat[0], boat[1] - 2) in ["m", "M", "?"] and \
+                            self.get_value(boat[0], boat[1] - 3) in ["l", "L", "?"]:
+
+                        self.set_value(boat[0], boat[1], "r")
+                        self.set_value(boat[0], boat[1] + 1, "m")
+                        self.set_value(boat[0], boat[1] - 1, "m")
+                        self.set_value(boat[0], boat[1] - 2, "l")
+                        self.unplaced_fours -= 1
+                                    
+
+                if self.unplaced_threes > 0:
+                    for middle in self.middle_pieces:
+                        print("ESTA AQUI 3333")
+                        adjacent_verticals = self.adjacent_vertical_values(middle[0], middle[1])
+                        if all([x == "?" for x in adjacent_verticals]) and \
+                                self.get_value(middle[0] - 2, middle[1]) in [".", None] and \
+                                self.get_value(middle[0] + 2, middle[1]) in [".", None]:
+                            
+                            self.set_value(middle[0] - 1, middle[1], "t")
+                            self.set_value(middle[0] + 1, middle[1], "b")
+                            self.unplaced_threes -= 1
+                            print("COLOCOU UM DE 3")
+                        
+                        adjacent_horizontals = self.adjacent_horizontal_values(middle[0], middle[1])
+                        if all([x == "?" for x in adjacent_horizontals]) and \
+                                self.get_value(middle[0], middle[1] - 2) in [".", None] and \
+                                self.get_value(middle[0], middle[1] + 2) in [".", None]:
+
+                            
+                            self.set_value(middle[0], middle[1] - 1, "l")
+                            self.set_value(middle[0], middle[1] + 1, "r")
+                            self.unplaced_threes -= 1
+                            print("COLOCOU UM DE 3")
+                    
+                    if self.get_value(boat[0] - 1, boat[1]) in ["t", "T", "?"] and \
+                        self.get_value(boat[0] + 1, boat[1]) in ["b", "B", "?"] and \
+                        self.get_value(boat[0] - 2, boat[1]) in [".", "W", None] and \
+                        self.get_value(boat[0] + 2, boat[1]) in [".", "W", None]:
+
+
+                        self.set_value(boat[0] - 1, boat[1], "t")
+                        self.set_value(boat[0], boat[1], "m")
+                        self.set_value(boat[0] + 1, boat[1], "b")
+                        self.unplaced_threes -= 1
+                        print("COLOCOU UM DE 3")
+
+                    elif self.get_value(boat[0], boat[1] - 1) in ["l", "L", "?"] and \
+                        self.get_value(boat[0], boat[1] + 1) in ["r", "R", "?"] and \
+                        self.get_value(boat[0], boat[1] - 2) in [".", "W", None] and \
+                        self.get_value(boat[0], boat[1] + 2) in [".", "W", None]:
+
+
+                        self.set_value(boat[0], boat[1] - 1, "l")
+                        self.set_value(boat[0], boat[1], "m")
+                        self.set_value(boat[0], boat[1] + 1, "r")
+                        self.unplaced_threes -= 1
+                        print("COLOCOU UM DE 3")
+
+
+                if self.unplaced_twos > 0:
+                    if self.get_value(boat[0] + 1, boat[1]) in ["b", "B"] and self.get_value(boat[0] - 1, boat[1]) in [".", "W", None]:
+                        self.set_value(boat[0], boat[1], "t")
+                        self.unplaced_twos -= 1
+                        print("COLOCOU UM DE 2.1 na posicao " + str(boat))
+                    elif self.get_value(boat[0] - 1, boat[1]) in ["t", "T"] and self.get_value(boat[0] + 1, boat[1]) in [".", "W", None]:
+                        self.set_value(boat[0], boat[1], "b")
+                        self.unplaced_twos -= 1
+                        print("COLOCOU UM DE 2.2")
+                    elif self.get_value(boat[0], boat[1] + 1) in ["r", "R"] and self.get_value(boat[0], boat[1] - 1) in [".", "W", None]:
+                        self.set_value(boat[0], boat[1], "l")
+                        self.unplaced_twos -= 1
+                        print("COLOCOU UM DE 2.3")
+                    elif self.get_value(boat[0], boat[1] - 1) in ["l", "L"] and self.get_value(boat[0], boat[1] + 1) in [".", "W", None]:
+                        self.set_value(boat[0], boat[1], "r")
+                        self.unplaced_twos -= 1
+                        print("COLOCOU UM DE 2.4")
+                    elif self.get_value(boat[0] + 1, boat[1]) == "?" and self.get_value(boat[0] - 1, boat[1]) in [".", "W", None] and self.get_value(boat[0] + 2, boat[1]) in [".", "W", None]:
+                        self.set_value(boat[0], boat[1], "t")
+                    elif self.get_value(boat[0] - 1, boat[1]) == "?" and self.get_value(boat[0] + 1, boat[1]) in [".", "W", None] and self.get_value(boat[0] - 2, boat[1]) in [".", "W", None]:
+                        self.set_value(boat[0], boat[1], "b")
+                    elif self.get_value(boat[0], boat[1] + 1) == "?" and self.get_value(boat[0], boat[1] - 1) in [".", "W", None] and self.get_value(boat[0], boat[1] + 2) in [".", "W", None]:
+                        self.set_value(boat[0], boat[1], "l")
+                    elif self.get_value(boat[0], boat[1] - 1) == "?" and self.get_value(boat[0], boat[1] + 1) in [".", "W", None] and self.get_value(boat[0], boat[1] - 2) in [".", "W", None]:
+                        self.set_value(boat[0], boat[1], "r")
+
+            print("=====================================")
+            print("ALTERANDO " + str(boat))
+            self.print_board()
+            print("UNPLACED 1s: " + str(self.unplaced_ones))
+            print("UNPLACED 2s: " + str(self.unplaced_twos))
+            print("UNPLACED 3s: " + str(self.unplaced_threes))
+            print("UNPLACED 4s: " + str(self.unplaced_fours))
+            print("=====================================")
 
     def handle_m_queue(self):
         for hint in board.to_run_m_hints:
@@ -344,3 +529,4 @@ if __name__ == "__main__":
     board.fill_water()
     board.handle_boats()
     board.print_board()
+    
