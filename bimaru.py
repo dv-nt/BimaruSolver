@@ -414,9 +414,6 @@ class Board:
 
         hint_info = stdin.readline().split()
 
-        if int(hint_info[0]) < 1:
-            return "no hints"
-
         for hint in range(int(hint_info[0])):
             hintLine = stdin.readline().split()
 
