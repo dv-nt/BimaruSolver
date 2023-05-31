@@ -50,12 +50,7 @@ class Board:
         self.middle_pieces = []
 
     def set_value(self, row: int, col: int, value: str):
-#         print("""
-# ==============================
-#         """)
-#         self.print_board()
-        """Atribui o valor na respetiva posição do tabuleiro."""
-        
+        """Atribui o valor na respetiva posição do tabuleiro."""   
         if row >= 0 and row <= 9 and col >= 0 and col <= 9:
             if self.get_value(row, col) in ["t", "T", "b", "B", "c", "C", "m", "M", "l", "L", "r", "R"]:
                 return
@@ -70,8 +65,6 @@ class Board:
         
 
     def get_value(self, row: int, col: int) -> str:
-        #print("ESTA NO GET VALUE")
-        #print(row, col)
         """Devolve o valor na respetiva posição do tabuleiro."""
         if row >= 0 and row <= 9 and col >= 0 and col <= 9:
             return self.cells[row][col]
@@ -109,14 +102,6 @@ class Board:
             self.set_value(row + coordinate[0], col + coordinate[1], ".")
 
     def m_hint(self, row: int, col: int):
-        # print(self.get_value(row, col - 1))
-
-        # print(self.get_value(row + 1, col))
-        # print(self.get_value(row - 1, col))
-        # print(self.get_value(row, col + 1))
-        # print(self.get_value(row, col - 1))
-
-
         if self.is_water(row + 1, col) or self.is_water(row - 1, col):
             # barco é horizontal
             if self.unplaced_fours == 0:
@@ -167,14 +152,6 @@ class Board:
             self.set_value(row + 1, col + 1, ".")
             self.set_value(row + 2, col + 1, ".")
 
-
-
-
-
-
-
-
-    
     def t_hint(self, row: int, col: int):
         water_surroundings = [(2, -1), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1)]
         for coordinate in water_surroundings:
@@ -346,7 +323,6 @@ class Board:
 
                 if self.unplaced_threes > 0:
                     for middle in self.middle_pieces:
-                        print("ESTA AQUI 3333")
                         adjacent_verticals = self.adjacent_vertical_values(middle[0], middle[1])
                         if all([x == "?" for x in adjacent_verticals]) and \
                                 self.get_value(middle[0] - 2, middle[1]) in [".", "W", None] and \
@@ -355,18 +331,15 @@ class Board:
                             self.set_value(middle[0] - 1, middle[1], "t")
                             self.set_value(middle[0] + 1, middle[1], "b")
                             self.unplaced_threes -= 1
-                            print("COLOCOU UM DE 3")
                         
                         adjacent_horizontals = self.adjacent_horizontal_values(middle[0], middle[1])
                         if all([x == "?" for x in adjacent_horizontals]) and \
                                 self.get_value(middle[0], middle[1] - 2) in [".", "W", None] and \
                                 self.get_value(middle[0], middle[1] + 2) in [".", "W",None]:
-
                             
                             self.set_value(middle[0], middle[1] - 1, "l")
                             self.set_value(middle[0], middle[1] + 1, "r")
                             self.unplaced_threes -= 1
-                            print("COLOCOU UM DE 3")
                     
                     if self.get_value(boat[0] - 1, boat[1]) in ["t", "T", "?"] and \
                         self.get_value(boat[0] + 1, boat[1]) in ["b", "B", "?"] and \
@@ -378,7 +351,6 @@ class Board:
                         self.set_value(boat[0], boat[1], "m")
                         self.set_value(boat[0] + 1, boat[1], "b")
                         self.unplaced_threes -= 1
-                        print("COLOCOU UM DE 3")
 
                     elif self.get_value(boat[0], boat[1] - 1) in ["l", "L", "?"] and \
                         self.get_value(boat[0], boat[1] + 1) in ["r", "R", "?"] and \
@@ -390,22 +362,17 @@ class Board:
                         self.set_value(boat[0], boat[1], "m")
                         self.set_value(boat[0], boat[1] + 1, "r")
                         self.unplaced_threes -= 1
-                        print("COLOCOU UM DE 3")
-
 
                 if self.unplaced_twos > 0:
                     if self.get_value(boat[0] + 1, boat[1]) in ["b", "B"] and self.get_value(boat[0] - 1, boat[1]) in [".", "W", None]:
                         self.set_value(boat[0], boat[1], "t")
                         self.unplaced_twos -= 1
-                        print("COLOCOU UM DE 2.1 na posicao " + str(boat))
                     elif self.get_value(boat[0] - 1, boat[1]) in ["t", "T"] and self.get_value(boat[0] + 1, boat[1]) in [".", "W", None]:
                         self.set_value(boat[0], boat[1], "b")
                         self.unplaced_twos -= 1
-                        print("COLOCOU UM DE 2.2")
                     elif self.get_value(boat[0], boat[1] + 1) in ["r", "R"] and self.get_value(boat[0], boat[1] - 1) in [".", "W", None]:
                         self.set_value(boat[0], boat[1], "l")
                         self.unplaced_twos -= 1
-                        print("COLOCOU UM DE 2.3")
                     elif self.get_value(boat[0], boat[1] - 1) in ["l", "L"] and self.get_value(boat[0], boat[1] + 1) in [".", "W", None]:
                         self.set_value(boat[0], boat[1], "r")
                         self.unplaced_twos -= 1
@@ -418,15 +385,6 @@ class Board:
                         self.set_value(boat[0], boat[1], "l")
                     elif self.get_value(boat[0], boat[1] - 1) == "?" and self.get_value(boat[0], boat[1] + 1) in [".", "W", None] and self.get_value(boat[0], boat[1] - 2) in [".", "W", None]:
                         self.set_value(boat[0], boat[1], "r")
-
-            print("=====================================")
-            print("ALTERANDO " + str(boat))
-            self.print_board()
-            print("UNPLACED 1s: " + str(self.unplaced_ones))
-            print("UNPLACED 2s: " + str(self.unplaced_twos))
-            print("UNPLACED 3s: " + str(self.unplaced_threes))
-            print("UNPLACED 4s: " + str(self.unplaced_fours))
-            print("=====================================")
 
     def handle_m_queue(self):
         for hint in board.to_run_m_hints:
@@ -529,4 +487,3 @@ if __name__ == "__main__":
     board.fill_water()
     board.handle_boats()
     board.print_board()
-    
