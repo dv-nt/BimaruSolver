@@ -220,6 +220,26 @@ class Board:
             self.fill_water()
 
     def handle_boats(self):
+        if self.unplaced_threes > 0:
+            for middle in self.middle_pieces:
+                adjacent_verticals = self.adjacent_vertical_values(middle[0], middle[1])
+                if all([x == "?" for x in adjacent_verticals]) and \
+                        self.get_value(middle[0] - 2, middle[1]) in [".", "W", None] and \
+                        self.get_value(middle[0] + 2, middle[1]) in [".", "W", None]:
+                    
+                    self.set_value(middle[0] - 1, middle[1], "t")
+                    self.set_value(middle[0] + 1, middle[1], "b")
+                    self.unplaced_threes -= 1
+                
+                adjacent_horizontals = self.adjacent_horizontal_values(middle[0], middle[1])
+                if all([x == "?" for x in adjacent_horizontals]) and \
+                        self.get_value(middle[0], middle[1] - 2) in [".", "W", None] and \
+                        self.get_value(middle[0], middle[1] + 2) in [".", "W",None]:
+                    
+                    self.set_value(middle[0], middle[1] - 1, "l")
+                    self.set_value(middle[0], middle[1] + 1, "r")
+                    self.unplaced_threes -= 1
+                    
         for boat in self.unknwon_boats:
             if self.get_value(boat[0], boat[1]) == "?":
                 if self.unplaced_ones > 0:
@@ -322,24 +342,7 @@ class Board:
                                     
 
                 if self.unplaced_threes > 0:
-                    for middle in self.middle_pieces:
-                        adjacent_verticals = self.adjacent_vertical_values(middle[0], middle[1])
-                        if all([x == "?" for x in adjacent_verticals]) and \
-                                self.get_value(middle[0] - 2, middle[1]) in [".", "W", None] and \
-                                self.get_value(middle[0] + 2, middle[1]) in [".", "W", None]:
-                            
-                            self.set_value(middle[0] - 1, middle[1], "t")
-                            self.set_value(middle[0] + 1, middle[1], "b")
-                            self.unplaced_threes -= 1
-                        
-                        adjacent_horizontals = self.adjacent_horizontal_values(middle[0], middle[1])
-                        if all([x == "?" for x in adjacent_horizontals]) and \
-                                self.get_value(middle[0], middle[1] - 2) in [".", "W", None] and \
-                                self.get_value(middle[0], middle[1] + 2) in [".", "W",None]:
-                            
-                            self.set_value(middle[0], middle[1] - 1, "l")
-                            self.set_value(middle[0], middle[1] + 1, "r")
-                            self.unplaced_threes -= 1
+
                     
                     if self.get_value(boat[0] - 1, boat[1]) in ["t", "T", "?"] and \
                         self.get_value(boat[0] + 1, boat[1]) in ["b", "B", "?"] and \
@@ -446,23 +449,69 @@ class Bimaru(Problem):
     def actions(self, state: BimaruState):
         """Retorna uma lista de ações que podem ser executadas a
         partir do estado passado como argumento."""
-        # TODO
-        pass
+        board = state.board
+        
 
     def result(self, state: BimaruState, action):
         """Retorna o estado resultante de executar a 'action' sobre
         'state' passado como argumento. A ação a executar deve ser uma
         das presentes na lista obtida pela execução de
         self.actions(state)."""
-        # TODO
-        pass
+
+        board = state.board
+        board.set_value(action[0], action[1], action[2])
+        
+        newState = BimaruState(board)
+        # newState.cells = board.cells
+        # newState.row_info = board.row_info
+        # newState.col_info = board.col_info
+        # newState.unplaced_ones = board.unplaced_ones
+        # newState.unplaced_twos = board.unplaced_twos
+        # newState.unplaced_threes = board.unplaced_threes
+        # newState.unplaced_fours = board.unplaced_fours
+        # newState.to_run_m_hints = board.to_run_m_hints
+        # newState.unknwon_boats = board.unknwon_boats
+        # newState.middle_pieces = board.middle_pieces
+
+        return newState
+
 
     def goal_test(self, state: BimaruState):
         """Retorna True se e só se o estado passado como argumento é
         um estado objetivo. Deve verificar se todas as posições do tabuleiro
         estão preenchidas de acordo com as regras do problema."""
-        # TODO
-        pass
+        
+        ones_left_count = 4
+        twos_left_count = 3
+        threes_left_count = 2
+        fours_left_count = 1
+        cells = state.board.cells
+
+        if any(x != 0 for x in state.board.row_info) or any(x != 0 for x in state.board.col_info):
+            return False
+        
+        for row_index, row in enumerate(cells):
+            for col_index, cell in enumerate(row):
+                if cell == "?":
+                    return False
+                if cell in ["c", "C"]:
+                    ones_left_count -= 1
+                elif cell in ["t", "T"]:
+                    if cells[row_index + 1][col_index] in ["b", "B"]:
+                        twos_left_count -= 1
+                    elif cells[row_index + 1][col_index] in ["m", "M"] and cells[row_index + 2][col_index] in ["b", "B"]:
+                        threes_left_count -= 1
+                    elif cells[row_index + 1][col_index] in ["m", "M"] and cells[row_index + 2][col_index] in ["m", "M"] and cells[row_index + 3][col_index] in ["b", "B"]:
+                        fours_left_count -= 1
+                elif cell in ["l", "L"]:
+                    if cells[row_index][col_index + 1] in ["r", "R"]:
+                        twos_left_count -= 1
+                    elif cells[row_index][col_index + 1] in ["m", "M"] and cells[row_index][col_index + 2] in ["r", "R"]:
+                        threes_left_count -= 1
+                    elif cells[row_index][col_index + 1] in ["m", "M"] and cells[row_index][col_index + 2] in ["m", "M"] and cells[row_index][col_index + 3] in ["r", "R"]:
+                        fours_left_count -= 1
+
+        return ones_left_count == twos_left_count == threes_left_count == fours_left_count == 0
 
     def h(self, node: Node):
         """Função heuristica utilizada para a procura A*."""
@@ -483,4 +532,20 @@ if __name__ == "__main__":
     board.handle_m_queue()
     board.fill_water()
     board.handle_boats()
-    board.print_board()
+    #board.print_board()
+    problem = Bimaru(Board)
+    s0 = BimaruState(board)
+    print("Is goal?", problem.goal_test(s0))
+
+    # board = Board.parse_instance()
+    # problem = Bimaru(board)
+
+    # s0 = BimaruState(board)
+
+    # s1 = problem.result(s0, (0, 1, "w"))
+    # s2 = problem.result(s1, (1, 1, "w"))
+    # s3 = problem.result(s2, (1, 0, "b"))
+    # s4 = problem.result(s3, (2, 0, "w"))
+    # s5 = problem.result(s4, (2, 1, "w"))
+
+    # print("Is goal?", problem.goal_test(s5))
