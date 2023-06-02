@@ -449,8 +449,20 @@ class Bimaru(Problem):
     def actions(self, state: BimaruState):
         """Retorna uma lista de ações que podem ser executadas a
         partir do estado passado como argumento."""
+
         board = state.board
-        
+
+        cells = board.cells
+        row_info = board.row_info
+        col_info = board.col_info
+
+        possibleActions = []
+
+        for row_index, row in enumerate(cells):
+            for col_index, cell in enumerate(row):
+                pass
+
+        return possibleActions
 
     def result(self, state: BimaruState, action):
         """Retorna o estado resultante de executar a 'action' sobre
@@ -535,6 +547,7 @@ if __name__ == "__main__":
     #board.print_board()
     problem = Bimaru(Board)
     s0 = BimaruState(board)
+    print(s0.board.print_board())
     print("Is goal?", problem.goal_test(s0))
 
     # board = Board.parse_instance()
