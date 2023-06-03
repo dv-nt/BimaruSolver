@@ -484,12 +484,19 @@ class Bimaru(Problem):
                             possibleActions.append((row_index, col_index, "1"))
 
                     if board.unplaced_fours > 0:
-                        pass
+                        #vertical
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (4, 0), (4, -1), (3, -1), (2, -1), (1, -1), (0, -1), (-1, -1)]]) \
+                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 3, col_index) in [" ", "?", "r", "R"] and board.get_value(row_index + 4, col_index) in [" ", ".", None]:
+                            possibleActions.append((row_index, col_index, "4V"))
+                        # horizontal
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (-1, 4), (0, 4), (1, 4), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]) \
+                            and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 3) in [" ", "?", "r", "R"] and board.get_value(row_index, col_index + 4) in [" ", ".", None]:
+                            possibleActions.append((row_index, col_index, "4H"))
                     
                     if board.unplaced_threes > 0:
                         #vertical
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (3, -1), (2, -1), (1, -1), (0, -1)]]) \
-                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 1, col_index) in [" ", "?", "b", "B"] and board.get_value(row_index + 3, col_index) in [" ", ".", None]:
+                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "b", "B"] and board.get_value(row_index + 3, col_index) in [" ", ".", None]:
                             possibleActions.append((row_index, col_index, "3V"))
                         #horizontal
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]) \
