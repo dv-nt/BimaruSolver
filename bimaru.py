@@ -482,14 +482,28 @@ class Bimaru(Problem):
                     if board.unplaced_ones > 0:
                         if all([board.get_value(x[0], x[1]) in [".", " ", None] for x in board.get_surroundings(row_index, col_index)]):
                             possibleActions.append((row_index, col_index, "1"))
+
+                    if board.unplaced_fours > 0:
+                        pass
+                    
+                    if board.unplaced_threes > 0:
+                        #vertical
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (3, -1), (2, -1), (1, -1), (0, -1)]]) \
+                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 1, col_index) in [" ", "?", "b", "B"] and board.get_value(row_index + 3, col_index) in [" ", ".", None]:
+                            possibleActions.append((row_index, col_index, "3V"))
+                        #horizontal
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]) \
+                            and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "r", "R"] and board.get_value(row_index, col_index + 3) in [" ", ".", None]:
+                            possibleActions.append((row_index, col_index, "3H"))
+
                     if board.unplaced_twos > 0:
                         # vertical
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1 , 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1)]]) \
-                                and board.get_value(row_index + 1, col_index) in [" ", "?"] and board.get_value(row_index + 2, col_index) in [" ", ".", None]:
+                                and board.get_value(row_index + 1, col_index) in [" ", "?", "b", "B"] and board.get_value(row_index + 2, col_index) in [" ", ".", None]:# and col_info[col_index] >= 2:
                             possibleActions.append((row_index, col_index, "2V"))
                         #horizontal
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(0, -1), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, 2), (1, 2), (1, 1), (1, 0), (1, -1)]]) \
-                                and board.get_value(row_index, col_index + 1) in [" ", "?"] and board.get_value(row_index, col_index + 2) in [" ", ".", None]:
+                                and board.get_value(row_index, col_index + 1) in [" ", "?", "r", "R"] and board.get_value(row_index, col_index + 2) in [" ", ".", None]:# and row_info[row_index] >= 2:
                             possibleActions.append((row_index, col_index, "2H"))
 
 
@@ -505,7 +519,20 @@ class Bimaru(Problem):
         
         
         newState = BimaruState(board)
-        newState.board.set_value(action[0], action[1], action[2])
+        #newState.board.set_value(action[0], action[1], action[2])
+        if action[2] == ".":
+            newState.board.set_value(action[0], action[1], ".")
+        elif action[2] == "1":
+            newState.board.place_one(action[0], action[1])
+        elif action[2] == "2V":
+            newState.board.place_two(action[0], action[1], True)
+        elif action[2] == "2H":
+            newState.board.place_two(action[0], action[1], False)
+        elif action[2] == "3V":
+            newState.board.place_three(action[0], action[1], True)
+        elif action[2] == "3H":
+            newState.board.place_three(action[0], action[1], False)
+
         newState.board.fill_water()
         newState.board.handle_boats()
         # newState.cells = board.cells
@@ -583,6 +610,9 @@ if __name__ == "__main__":
     s0 = BimaruState(board)
     print(s0.board.print_board())
     print(problem.actions(s0))
+    #s1 = problem.result(s0, (4, 4, '3H'))
+
+    #print(s1.board.print_board())
     
     print("Is goal?", problem.goal_test(s0))
 
