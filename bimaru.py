@@ -52,7 +52,7 @@ class Board:
     def set_value(self, row: int, col: int, value: str):
         """Atribui o valor na respetiva posição do tabuleiro."""   
         if row >= 0 and row <= 9 and col >= 0 and col <= 9:
-            if self.get_value(row, col) in ["t", "T", "b", "B", "c", "C", "m", "M", "l", "L", "r", "R"]:
+            if self.get_value(row, col) in ["t", "T", "b", "B", "c", "C", "m", "M", "l", "L", "r", "R", "W"]:
                 return
             if value not in ["W", "."] and self.get_value(row, col) not in "?":
                 self.row_info[row] = self.row_info[row] - 1
@@ -379,7 +379,6 @@ class Board:
                     elif self.get_value(boat[0], boat[1] - 1) in ["l", "L"] and self.get_value(boat[0], boat[1] + 1) in [".", "W", None]:
                         self.set_value(boat[0], boat[1], "r")
                         self.unplaced_twos -= 1
-                        print("COLOCOU UM DE 2.4")
                     elif self.get_value(boat[0] + 1, boat[1]) == "?" and self.get_value(boat[0] - 1, boat[1]) in [".", "W", None] and self.get_value(boat[0] + 2, boat[1]) in [".", "W", None]:
                         self.set_value(boat[0], boat[1], "t")
                     elif self.get_value(boat[0] - 1, boat[1]) == "?" and self.get_value(boat[0] + 1, boat[1]) in [".", "W", None] and self.get_value(boat[0] - 2, boat[1]) in [".", "W", None]:
@@ -397,6 +396,66 @@ class Board:
         print("  " + " ".join([str(x) for x in self.col_info]))
         for i in range(len(self.cells)):
             print(str(self.row_info[i]) + " " + " ".join(self.cells[i]))
+
+    def place_one(self, row: int, col: int):
+        self.set_value(row, col, "c")
+        for surround in self.get_surroundings(row, col):
+            self.set_value(surround[0], surround[1], ".")
+        self.unplaced_ones -= 1
+
+    def place_two(self, row: int, col: int, vertical: bool):
+        if vertical:
+            self.set_value(row, col, "t")
+            self.set_value(row + 1, col, "b")
+
+            for surround in [(-1 , -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 1), (2, -1), (2, 0), (2, 1)]:
+                self.set_value(row + surround[0], col + surround[1], ".")
+        else:
+            self.set_value(row, col, "l")
+            self.set_value(row, col + 1, "r")
+
+            for surround in [(0, -1), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, 2), (1, 2), (1, 1), (1, 0), (1, -1)]:
+                self.set_value(row + surround[0], col + surround[1], ".")
+
+        self.unplaced_twos -= 1
+
+    def place_three(self, row: int, col: int, vertical: bool):
+        if vertical:
+            self.set_value(row, col, "t")
+            self.set_value(row + 1, col, "m")
+            self.set_value(row + 2, col, "b")
+
+            for surround in [(-1 , -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 1), (2, -1), (2, 1), (3, -1), (3, 0), (3, 1)]:
+                self.set_value(row + surround[0], col + surround[1], ".")
+        else:
+            self.set_value(row, col, "l")
+            self.set_value(row, col + 1, "m")
+            self.set_value(row, col + 2, "r")
+
+            for surround in [(0, -1), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1)]:
+                self.set_value(row + surround[0], col + surround[1], ".")
+
+        self.unplaced_threes -= 1
+
+    def place_four(self, row: int, col: int, vertical: bool):
+        if vertical:
+            self.set_value(row, col, "t")
+            self.set_value(row + 1, col, "m")
+            self.set_value(row + 2, col, "m")
+            self.set_value(row + 3, col, "b")
+
+            for surround in [(-1 , -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (4, 0), (4, -1), (3, -1), (2, -1), (1, -1), (0, -1)]:
+                self.set_value(row + surround[0], col + surround[1], ".")
+        else:
+            self.set_value(row, col, "l")
+            self.set_value(row, col + 1, "m")
+            self.set_value(row, col + 2, "m")
+            self.set_value(row, col + 3, "r")
+
+            for surround in [(0, -1), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (-1, 4), (0, 4), (1, 4), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1)]:
+                self.set_value(row + surround[0], col + surround[1], ".")
+
+        self.unplaced_fours -= 1
 
     @staticmethod
     def parse_instance():
