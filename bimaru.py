@@ -227,25 +227,20 @@ class Board:
                         self.get_value(middle[0] - 2, middle[1]) in [".", "W", None] and \
                         self.get_value(middle[0] + 2, middle[1]) in [".", "W", None]:
                     
-                    self.set_value(middle[0] - 1, middle[1], "t")
-                    self.set_value(middle[0] + 1, middle[1], "b")
-                    self.unplaced_threes -= 1
+                    self.place_three(middle[0] - 1, middle[1], True)
                 
                 adjacent_horizontals = self.adjacent_horizontal_values(middle[0], middle[1])
                 if all([x == "?" for x in adjacent_horizontals]) and \
                         self.get_value(middle[0], middle[1] - 2) in [".", "W", None] and \
                         self.get_value(middle[0], middle[1] + 2) in [".", "W",None]:
                     
-                    self.set_value(middle[0], middle[1] - 1, "l")
-                    self.set_value(middle[0], middle[1] + 1, "r")
-                    self.unplaced_threes -= 1
+                    self.place_three(middle[0], middle[1] - 1, False)
                     
         for boat in self.unknwon_boats:
             if self.get_value(boat[0], boat[1]) == "?":
                 if self.unplaced_ones > 0:
                     if all([self.is_water(x[0], x[1]) for x in self.get_surroundings(boat[0], boat[1])]):
-                        self.set_value(boat[0], boat[1], "c")
-                        self.unplaced_ones -= 1
+                        self.place_one(boat[0], boat[1])
 
                 if self.unplaced_fours > 0:
                     # top piece
@@ -254,11 +249,7 @@ class Board:
                         self.get_value(boat[0] + 2, boat[1]) in ["m", "M", "?"] and \
                         self.get_value(boat[0] + 3, boat[1]) in ["b", "B", "?"]:
 
-                        self.set_value(boat[0], boat[1], "t")
-                        self.set_value(boat[0] + 1, boat[1], "m")
-                        self.set_value(boat[0] + 2, boat[1], "m")
-                        self.set_value(boat[0] + 3, boat[1], "b")
-                        self.unplaced_fours -= 1
+                        self.place_four(boat[0], boat[1], True)
                     
                     # bottom piece
                     elif self.get_value(boat[0] + 1, boat[1]) in [".", "W", None] and \
@@ -266,33 +257,21 @@ class Board:
                             self.get_value(boat[0] - 2, boat[1]) in ["m", "M", "?"] and \
                             self.get_value(boat[0] - 3, boat[1]) in ["t", "T", "?"]:
 
-                        self.set_value(boat[0], boat[1], "b")
-                        self.set_value(boat[0] - 1, boat[1], "m")
-                        self.set_value(boat[0] - 2, boat[1], "m")
-                        self.set_value(boat[0] - 3, boat[1], "t")
-                        self.unplaced_fours -= 1
+                        self.place_four(boat[0] - 3, boat[1], True)
 
                     # top middle piece
                     elif self.get_value(boat[0] - 1, boat[1]) in ["t", "T", "?"] and \
                             self.get_value(boat[0] + 1, boat[1]) in ["m", "M", "?"] and \
                             self.get_value(boat[0] + 2, boat[1]) in ["b", "B", "?"]:
                         
-                        self.set_value(boat[0], boat[1], "m")
-                        self.set_value(boat[0] - 1, boat[1, "t"])
-                        self.set_value(boat[0] + 1, boat[1], "m")
-                        self.set_value(boat[0] + 2, boat[1], "b")
-                        self.unplaced_fours -= 1
+                        self.place_four(boat[0] - 1, boat[1], True)
 
                     # bottom middle piece
                     elif self.get_value(boat[0] + 1, boat[1]) in ["b", "B", "?"] and \
                             self.get_value(boat[0] - 1, boat[1]) in ["m", "M", "?"] and \
                             self.get_value(boat[0] - 2, boat[1]) in ["t", "T", "?"]:
 
-                        self.set_value(boat[0], boat[1], "m")
-                        self.set_value(boat[0] + 1, boat[1], "b")
-                        self.set_value(boat[0] - 1, boat[1], "m")
-                        self.set_value(boat[0] - 2, boat[1], "t")
-                        self.unplaced_fours -= 1
+                        self.place_four(boat[0] - 2, boat[1], True)
 
                     # left piece
                     if self.get_value(boat[0], boat[1] - 1) in [".", "W", None] and \
@@ -300,33 +279,21 @@ class Board:
                             self.get_value(boat[0], boat[1] + 2) in ["m", "M", "?"] and \
                             self.get_value(boat[0], boat[1] + 3) in ["r", "R", "?"]:
 
-                        self.set_value(boat[0], boat[1], "l")
-                        self.set_value(boat[0], boat[1] + 1, "m")
-                        self.set_value(boat[0], boat[1] + 2, "m")
-                        self.set_value(boat[0], boat[1] + 3, "r")
-                        self.unplaced_fours -= 1
+                        self.place_four(boat[0], boat[1], False)
 
                     # left middle piece
                     elif self.get_value(boat[0], boat[1] - 1) in ["l", "L", "?"] and \
                             self.get_value(boat[0], boat[1] + 1) in ["m", "M", "?"] and \
                             self.get_value(boat[0], boat[1] + 2) in ["r", "R", "?"]:
 
-                        self.set_value(boat[0], boat[1], "m")
-                        self.set_value(boat[0], boat[1] - 1, "l")
-                        self.set_value(boat[0], boat[1] + 1, "m")
-                        self.set_value(boat[0], boat[1] + 2, "r")
-                        self.unplaced_fours -= 1
+                        self.place_four(boat[0], boat[1] - 1, False)
 
                     # middle right piece
                     elif self.get_value(boat[0], boat[1] + 1) in ["r", "R", "?"] and \
                             self.get_value(boat[0], boat[1] - 1) in ["m", "M", "?"] and \
                             self.get_value(boat[0], boat[1] - 2) in ["l", "L", "?"]:
 
-                        self.set_value(boat[0], boat[1], "m")
-                        self.set_value(boat[0], boat[1] + 1, "r")
-                        self.set_value(boat[0], boat[1] - 1, "m")
-                        self.set_value(boat[0], boat[1] - 2, "l")
-                        self.unplaced_fours -= 1
+                        self.place_four(boat[0], boat[1] - 2, False)
 
                     # right piece
                     elif self.get_value(boat[0], boat[1] + 1) in [".", "W", None] and \
@@ -334,15 +301,9 @@ class Board:
                             self.get_value(boat[0], boat[1] - 2) in ["m", "M", "?"] and \
                             self.get_value(boat[0], boat[1] - 3) in ["l", "L", "?"]:
 
-                        self.set_value(boat[0], boat[1], "r")
-                        self.set_value(boat[0], boat[1] + 1, "m")
-                        self.set_value(boat[0], boat[1] - 1, "m")
-                        self.set_value(boat[0], boat[1] - 2, "l")
-                        self.unplaced_fours -= 1
-                                    
+                        self.place_four(boat[0], boat[1] - 3, False)                                    
 
                 if self.unplaced_threes > 0:
-
                     
                     if self.get_value(boat[0] - 1, boat[1]) in ["t", "T", "?"] and \
                         self.get_value(boat[0] + 1, boat[1]) in ["b", "B", "?"] and \
@@ -350,43 +311,39 @@ class Board:
                         self.get_value(boat[0] + 2, boat[1]) in [".", "W", None]:
 
 
-                        self.set_value(boat[0] - 1, boat[1], "t")
-                        self.set_value(boat[0], boat[1], "m")
-                        self.set_value(boat[0] + 1, boat[1], "b")
-                        self.unplaced_threes -= 1
+                        self.place_three(boat[0] - 1, boat[1], True)
 
                     elif self.get_value(boat[0], boat[1] - 1) in ["l", "L", "?"] and \
                         self.get_value(boat[0], boat[1] + 1) in ["r", "R", "?"] and \
                         self.get_value(boat[0], boat[1] - 2) in [".", "W", None] and \
                         self.get_value(boat[0], boat[1] + 2) in [".", "W", None]:
 
-
-                        self.set_value(boat[0], boat[1] - 1, "l")
-                        self.set_value(boat[0], boat[1], "m")
-                        self.set_value(boat[0], boat[1] + 1, "r")
-                        self.unplaced_threes -= 1
+                        self.place_three(boat[0], boat[1] - 1, False)
 
                 if self.unplaced_twos > 0:
                     if self.get_value(boat[0] + 1, boat[1]) in ["b", "B"] and self.get_value(boat[0] - 1, boat[1]) in [".", "W", None]:
-                        self.set_value(boat[0], boat[1], "t")
-                        self.unplaced_twos -= 1
+                        self.place_two(boat[0], boat[1], True)
+
                     elif self.get_value(boat[0] - 1, boat[1]) in ["t", "T"] and self.get_value(boat[0] + 1, boat[1]) in [".", "W", None]:
-                        self.set_value(boat[0], boat[1], "b")
-                        self.unplaced_twos -= 1
+                        self.place_two(boat[0] - 1, boat[1], True)
+
                     elif self.get_value(boat[0], boat[1] + 1) in ["r", "R"] and self.get_value(boat[0], boat[1] - 1) in [".", "W", None]:
-                        self.set_value(boat[0], boat[1], "l")
-                        self.unplaced_twos -= 1
+                        self.place_two(boat[0], boat[1], False)
+
                     elif self.get_value(boat[0], boat[1] - 1) in ["l", "L"] and self.get_value(boat[0], boat[1] + 1) in [".", "W", None]:
-                        self.set_value(boat[0], boat[1], "r")
-                        self.unplaced_twos -= 1
+                        self.place_two(boat[0], boat[1] - 1, False)
+
                     elif self.get_value(boat[0] + 1, boat[1]) == "?" and self.get_value(boat[0] - 1, boat[1]) in [".", "W", None] and self.get_value(boat[0] + 2, boat[1]) in [".", "W", None]:
-                        self.set_value(boat[0], boat[1], "t")
+                        self.place_two(boat[0], boat[1], True)
+
                     elif self.get_value(boat[0] - 1, boat[1]) == "?" and self.get_value(boat[0] + 1, boat[1]) in [".", "W", None] and self.get_value(boat[0] - 2, boat[1]) in [".", "W", None]:
-                        self.set_value(boat[0], boat[1], "b")
+                        self.place_two(boat[0] - 1, boat[1], True)
+
                     elif self.get_value(boat[0], boat[1] + 1) == "?" and self.get_value(boat[0], boat[1] - 1) in [".", "W", None] and self.get_value(boat[0], boat[1] + 2) in [".", "W", None]:
-                        self.set_value(boat[0], boat[1], "l")
+                        self.place_two(boat[0], boat[1], False)
+
                     elif self.get_value(boat[0], boat[1] - 1) == "?" and self.get_value(boat[0], boat[1] + 1) in [".", "W", None] and self.get_value(boat[0], boat[1] - 2) in [".", "W", None]:
-                        self.set_value(boat[0], boat[1], "r")
+                        self.place_two(boat[0], boat[1] - 1, False)
 
     def handle_m_queue(self):
         for hint in board.to_run_m_hints:
