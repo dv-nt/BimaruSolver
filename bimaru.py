@@ -459,8 +459,7 @@ class Board:
 class Bimaru(Problem):
     def __init__(self, board: Board):
         """O construtor especifica o estado inicial."""
-        # TODO
-        pass
+        self.initial = BimaruState(board)
 
     def actions(self, state: BimaruState):
         """Retorna uma lista de ações que podem ser executadas a
@@ -506,25 +505,29 @@ class Bimaru(Problem):
                         # horizontal
                         # left piece
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (-1, 4), (0, 4), (1, 4), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]) \
-                            and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 3) in [" ", "?", "r", "R"]:
+                            and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 3) in [" ", "?", "r", "R"] \
+                            and row_info[row_index] + row.count("?") >= 4:
                             if (row_index, col_index, "4H") not in possibleActions:
                                 possibleActions.append((row_index, col_index, "4H"))
 
                         # left middle piece
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (1, -2), (0, -2)]]) \
-                            and board.get_value(row_index, col_index - 1) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "r", "R"]:
+                            and board.get_value(row_index, col_index - 1) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "r", "R"] \
+                            and row_info[row_index] + row.count("?") >= 4:
                             if (row_index, col_index - 1, "4H") not in possibleActions:
                                 possibleActions.append((row_index, col_index - 1, "4H"))
 
                         # right middle piece
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -3), (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, 2), (1, 2), (1, 1), (1, 0), (1, -1), (1, -2), (1, -3), (0, -3)]]) \
-                            and board.get_value(row_index, col_index - 2) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index - 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 1) in [" ", "?", "r", "R"]:
+                            and board.get_value(row_index, col_index - 2) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index - 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 1) in [" ", "?", "r", "R"] \
+                            and row_info[row_index] + row.count("?") >= 4:
                             if (row_index, col_index - 2, "4H") not in possibleActions:
                                 possibleActions.append((row_index, col_index - 2, "4H"))
 
                         # right piece
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -4), (-1, -3), (-1, -2), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (1, -2), (1, -3), (1, -4), (0, -4)]]) \
-                            and board.get_value(row_index, col_index - 3) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index - 2) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index - 1) in [" ", "?", "m", "M"]:
+                            and board.get_value(row_index, col_index - 3) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index - 2) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index - 1) in [" ", "?", "m", "M"] \
+                            and row_info[row_index] + row.count("?") >= 4:
                             if (row_index, col_index - 3, "4H") not in possibleActions:
                                 possibleActions.append((row_index, col_index - 3, "4H"))
                     
@@ -596,8 +599,6 @@ class Bimaru(Problem):
                                 possibleActions.append((row_index, col_index - 1, "2H"))
 
                     if board.unplaced_ones > 0:
-                        if row_index == col_index == 5:
-                            print([board.get_value(x[0], x[1]) in [".", " ", None, "W"] for x in board.get_surroundings(row_index, col_index)])
                         if all([board.get_value(x[0], x[1]) in [".", " ", None, "W"] for x in board.get_surroundings(row_index, col_index)]):
                             if (row_index, col_index, "1") not in possibleActions:
                                 possibleActions.append((row_index, col_index, "1"))
@@ -607,8 +608,19 @@ class Bimaru(Problem):
                             possibleActions.append((row_index, col_index, "."))
                     
 
-
-        return possibleActions
+        def priority(x):
+            if x == '4V' or x == '4H':
+                return 1
+            elif x == '3V' or x == '3H':
+                return 2
+            elif x == '2V' or x =='2H':
+                return 3
+            elif x =='1':
+                return 4
+            else: # when it is '.'
+                return 5
+        
+        return sorted(possibleActions, key=lambda tup: priority(tup[2]))
 
     def result(self, state: BimaruState, action):
         """Retorna o estado resultante de executar a 'action' sobre
@@ -674,20 +686,34 @@ class Bimaru(Problem):
                     return False
                 if cell in ["c", "C"]:
                     ones_left_count -= 1
+                    if not all([board.get_value(x[0], x[1]) in [".", "W", None] for x in board.get_surroundings(row_index, col_index)]):
+                        return False
                 elif cell in ["t", "T"]:
                     if cells[row_index + 1][col_index] in ["b", "B"]:
                         twos_left_count -= 1
+                        if not all([board.get_values(x[0], x[1]) in [".", "W", None] for x in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1)]]):
+                            return False
                     elif cells[row_index + 1][col_index] in ["m", "M"] and cells[row_index + 2][col_index] in ["b", "B"]:
                         threes_left_count -= 1
+                        if not all([board.get_values(x[0], x[1]) in [".", "W", None] for x in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (3, -1), (2, -1), (1, -1), (0, -1)]]):
+                            return False
                     elif cells[row_index + 1][col_index] in ["m", "M"] and cells[row_index + 2][col_index] in ["m", "M"] and cells[row_index + 3][col_index] in ["b", "B"]:
                         fours_left_count -= 1
+                        if not all([board.get_values(x[0], x[1]) in [".", "W", None] for x in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (4, 0), (4, -1), (3, -1), (2, -1), (1, -1), (0, -1)]]):
+                            return False
                 elif cell in ["l", "L"]:
                     if cells[row_index][col_index + 1] in ["r", "R"]:
                         twos_left_count -= 1
+                        if not all([board.get_values(x[0], x[1]) in [".", "W", None] for x in [(-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (1, 2), (0, 2), (-1, 2), (-1, 1), (-1, 0)]]):
+                            return False
                     elif cells[row_index][col_index + 1] in ["m", "M"] and cells[row_index][col_index + 2] in ["r", "R"]:
                         threes_left_count -= 1
+                        if not all([board.get_values(x[0], x[1]) in [".", "W", None] for x in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]):
+                            return False
                     elif cells[row_index][col_index + 1] in ["m", "M"] and cells[row_index][col_index + 2] in ["m", "M"] and cells[row_index][col_index + 3] in ["r", "R"]:
                         fours_left_count -= 1
+                        if not all([board.get_values(x[0], x[1]) in [".", "W", None] for x in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (-1, 4), (0, 4), (1, 4), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]):
+                            return False
 
         return ones_left_count == twos_left_count == threes_left_count == fours_left_count == 0
 
@@ -711,29 +737,41 @@ if __name__ == "__main__":
     board.fill_water()
     board.handle_boats()
     #board.print_board()
-    problem = Bimaru(Board)
-    s0 = BimaruState(board)
-    
-    #print(s0.board.print_board())
-    #print(problem.actions(s0))
-    
-    
-    
-    s1 = problem.result(s0, (5, 9, '4V'))
-    s2 = problem.result(s1, (5, 1, '3H'))
-    s3 = problem.result(s2, (8, 0, '3H'))
-    s4 = problem.result(s3, (3, 1, '2H'))
-    s5 = problem.result(s4, (3, 8, '2H'))
-    s6 = problem.result(s5, (8, 4, '2H'))
-    print(s6.board.print_board())
-    print(problem.actions(s6))
-    
-    print("Is goal?", problem.goal_test(s6))
+    problem = Bimaru(board)
+    s0 = problem.initial
 
-    print(board.unplaced_ones)
-    print(board.unplaced_twos)
-    print(board.unplaced_threes)
-    print(board.unplaced_fours)
+    #solution = depth_first_tree_search(problem)
+
+    #solution.state.board.print_board()
+    
+
+
+
+    print(s0.board.print_board())
+    print(len(problem.actions(s0)))
+    
+    
+    
+    # s1 = problem.result(s0, (2, 1, '3V'))
+    # print(s1.board.print_board())
+    # print(problem.actions(s1))
+    # print("Is goal?", problem.goal_test(s1))
+
+    # s2 = problem.result(s1, (5, 1, '3H'))
+    # s3 = problem.result(s2, (8, 0, '3H'))
+    # s4 = problem.result(s3, (3, 1, '2H'))
+    # s5 = problem.result(s4, (3, 8, '2H'))
+    # s6 = problem.result(s5, (8, 4, '2H'))
+    # s7 = problem.result(s6, (4, 5, '1'))
+    # print(s7.board.print_board())
+    # print(problem.actions(s7))
+    
+    # print("Is goal?", problem.goal_test(s7))
+
+    # print(board.unplaced_ones)
+    # print(board.unplaced_twos)
+    # print(board.unplaced_threes)
+    # print(board.unplaced_fours)
 
     # board = Board.parse_instance()
     # problem = Bimaru(board)
