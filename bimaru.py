@@ -477,6 +477,8 @@ class Bimaru(Problem):
         for row_index, row in enumerate(cells):
             for col_index, cell in enumerate(row):
                 if cell in ["?", " "]:
+                    if row_info[row_index] < row.count(" "):
+                        possibleActions.append((row_index, col_index, "."))
                     if board.unplaced_ones > 0:
                         if all([board.get_value(x[0], x[1]) in [".", " "] for x in board.get_surroundings(row_index, col_index)]):
                             possibleActions.append((row_index, col_index, "c"))
