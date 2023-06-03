@@ -476,7 +476,10 @@ class Bimaru(Problem):
 
         for row_index, row in enumerate(cells):
             for col_index, cell in enumerate(row):
-                pass
+                if cell in ["?", " "]:
+                    if board.unplaced_ones > 0:
+                        if all([board.get_value(x[0], x[1]) in [".", " "] for x in board.get_surroundings(row_index, col_index)]):
+                            possibleActions.append((row_index, col_index, "c"))
 
         return possibleActions
 
@@ -487,9 +490,12 @@ class Bimaru(Problem):
         self.actions(state)."""
 
         board = state.board
-        board.set_value(action[0], action[1], action[2])
+        
         
         newState = BimaruState(board)
+        newState.board.set_value(action[0], action[1], action[2])
+        newState.board.fill_water()
+        newState.board.handle_boats()
         # newState.cells = board.cells
         # newState.row_info = board.row_info
         # newState.col_info = board.col_info
@@ -564,7 +570,14 @@ if __name__ == "__main__":
     problem = Bimaru(Board)
     s0 = BimaruState(board)
     print(s0.board.print_board())
+    print(problem.actions(s0))
+    
     print("Is goal?", problem.goal_test(s0))
+
+    print(board.unplaced_ones)
+    print(board.unplaced_twos)
+    print(board.unplaced_threes)
+    print(board.unplaced_fours)
 
     # board = Board.parse_instance()
     # problem = Bimaru(board)
