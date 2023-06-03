@@ -480,8 +480,18 @@ class Bimaru(Problem):
                     if row_info[row_index] < row.count(" "):
                         possibleActions.append((row_index, col_index, "."))
                     if board.unplaced_ones > 0:
-                        if all([board.get_value(x[0], x[1]) in [".", " "] for x in board.get_surroundings(row_index, col_index)]):
-                            possibleActions.append((row_index, col_index, "c"))
+                        if all([board.get_value(x[0], x[1]) in [".", " ", None] for x in board.get_surroundings(row_index, col_index)]):
+                            possibleActions.append((row_index, col_index, "1"))
+                    if board.unplaced_twos > 0:
+                        # vertical
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1 , 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1)]]) \
+                                and board.get_value(row_index + 1, col_index) in [" ", "?"] and board.get_value(row_index + 2, col_index) in [" ", ".", None]:
+                            possibleActions.append((row_index, col_index, "2V"))
+                        #horizontal
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(0, -1), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, 2), (1, 2), (1, 1), (1, 0), (1, -1)]]) \
+                                and board.get_value(row_index, col_index + 1) in [" ", "?"] and board.get_value(row_index, col_index + 2) in [" ", ".", None]:
+                            possibleActions.append((row_index, col_index, "2H"))
+
 
         return possibleActions
 
