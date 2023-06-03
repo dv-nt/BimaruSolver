@@ -477,89 +477,135 @@ class Bimaru(Problem):
         for row_index, row in enumerate(cells):
             for col_index, cell in enumerate(row):
                 if cell in ["?", " "]:
-                    if row_info[row_index] < row.count(" "):
-                        if (row_index, col_index, ".") not in possibleActions:
-                            possibleActions.append((row_index, col_index, "."))
-                    if board.unplaced_ones > 0:
-                        if all([board.get_value(x[0], x[1]) in [".", " ", None] for x in board.get_surroundings(row_index, col_index)]):
-                            if (row_index, col_index, "1") not in possibleActions:
-                                possibleActions.append((row_index, col_index, "1"))
-
                     if board.unplaced_fours > 0:
                         #vertical
                         # top piece
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (4, 0), (4, -1), (3, -1), (2, -1), (1, -1), (0, -1), (-1, -1)]]) \
-                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 3, col_index) in [" ", "?", "r", "R"] and board.get_value(row_index + 4, col_index) in [" ", ".", None]:
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (4, 0), (4, -1), (3, -1), (2, -1), (1, -1), (0, -1), (-1, -1)]]) \
+                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 3, col_index) in [" ", "?", "r", "R"]:
                                 if (row_index, col_index, "4V") not in possibleActions:
                                     possibleActions.append((row_index, col_index, "4V"))
 
                         # top middle piece
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-2, -1), (-2, 0), (-2, 1), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (3, -1), (2, -1), (1, -1), (0, -1), (-1, -1)]]) \
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-2, -1), (-2, 0), (-2, 1), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (3, -1), (2, -1), (1, -1), (0, -1), (-1, -1)]]) \
                             and board.get_value(row_index - 1, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "b", "B"]:
                                 if (row_index - 1, col_index, "4V") not in possibleActions:
                                     possibleActions.append((row_index - 1, col_index, "4V"))
 
                         # bottom middle piece
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-3, -1), (-3, 0), (-3, 1), (-2, 1), (-1, 1), (0, 1), (1, 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1), (-1, -1), (-2, -1)]]) \
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-3, -1), (-3, 0), (-3, 1), (-2, 1), (-1, 1), (0, 1), (1, 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1), (-1, -1), (-2, -1)]]) \
                             and board.get_value(row_index - 2, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index - 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 1, col_index) in [" ", "?", "b", "B"]:
                             if (row_index - 2, col_index, "4V") not in possibleActions:
                                 possibleActions.append((row_index - 2, col_index, "4V"))
                         
                         # bottom piece
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-4, -1), (-4, 0), (-4, 1), (-3, 1), (-2, 1), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-2, -1), (-3, -1)]]) \
-                            and board.get_value(row_index - 3, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index - 2, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index - 1, col_index) in [" ", "?", "b", "B"] and board.get_value(row_index - 4, col_index) in [" ", ".", None]:
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-4, -1), (-4, 0), (-4, 1), (-3, 1), (-2, 1), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-2, -1), (-3, -1)]]) \
+                            and board.get_value(row_index - 3, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index - 2, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index - 1, col_index) in [" ", "?", "b", "B"]:
                             if (row_index - 3, col_index, "4V") not in possibleActions:
                                 possibleActions.append((row_index - 3, col_index, "4V"))
                         
                         # horizontal
                         # left piece
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (-1, 4), (0, 4), (1, 4), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]) \
-                            and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 3) in [" ", "?", "r", "R"] and board.get_value(row_index, col_index + 4) in [" ", ".", None]:
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (-1, 4), (0, 4), (1, 4), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]) \
+                            and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 3) in [" ", "?", "r", "R"]:
                             if (row_index, col_index, "4H") not in possibleActions:
-                                print(row_index, col_index, "LEFT")
                                 possibleActions.append((row_index, col_index, "4H"))
 
                         # left middle piece
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (1, -2), (0, -2)]]) \
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (1, -2), (0, -2)]]) \
                             and board.get_value(row_index, col_index - 1) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "r", "R"]:
                             if (row_index, col_index - 1, "4H") not in possibleActions:
                                 possibleActions.append((row_index, col_index - 1, "4H"))
 
                         # right middle piece
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -3), (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, 2), (1, 2), (1, 1), (1, 0), (1, -1), (1, -2), (1, -3), (0, -3)]]) \
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -3), (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, 2), (1, 2), (1, 1), (1, 0), (1, -1), (1, -2), (1, -3), (0, -3)]]) \
                             and board.get_value(row_index, col_index - 2) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index - 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 1) in [" ", "?", "r", "R"]:
                             if (row_index, col_index - 2, "4H") not in possibleActions:
                                 possibleActions.append((row_index, col_index - 2, "4H"))
 
                         # right piece
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -4), (-1, -3), (-1, -2), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (1, -2), (1, -3), (1, -4), (0, -4)]]) \
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -4), (-1, -3), (-1, -2), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (1, -2), (1, -3), (1, -4), (0, -4)]]) \
                             and board.get_value(row_index, col_index - 3) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index - 2) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index - 1) in [" ", "?", "m", "M"]:
                             if (row_index, col_index - 3, "4H") not in possibleActions:
                                 possibleActions.append((row_index, col_index - 3, "4H"))
                     
                     if board.unplaced_threes > 0:
                         #vertical
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (3, -1), (2, -1), (1, -1), (0, -1)]]) \
-                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "b", "B"] and board.get_value(row_index + 3, col_index) in [" ", ".", None]:
+                        # top piece
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (3, -1), (2, -1), (1, -1), (0, -1)]]) \
+                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "b", "B"]:
                             if (row_index, col_index, "3V") not in possibleActions:
                                 possibleActions.append((row_index, col_index, "3V"))
+
+                        # middle piece
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-2, -1), (-2, 0), (-2, 1), (-1, 1), (0, 1), (1, 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1), (-1, -1)]]) \
+                            and board.get_value(row_index - 1, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index + 1, col_index) in [" ", "?", "b", "B"]:
+                            if (row_index - 1, col_index, "3V") not in possibleActions:
+                                possibleActions.append((row_index - 1, col_index, "3V"))
+
+                        # bottom piece
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-3, -1), (-3, 0), (-3, 1), (-2, 1), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-2, -1)]]) \
+                            and board.get_value(row_index - 2, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index - 1, col_index) in [" ", "?", "m", "M"]:
+                            if (row_index - 2, col_index, "3V") not in possibleActions:
+                                possibleActions.append((row_index - 2, col_index, "3V"))
+
+
                         #horizontal
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]) \
-                            and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "r", "R"] and board.get_value(row_index, col_index + 3) in [" ", ".", None]:
+                        # left piece
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (-1, 3), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0), (1, -1), (0, -1)]]) \
+                            and board.get_value(row_index, col_index + 1) in [" ", "?", "m", "M"] and board.get_value(row_index, col_index + 2) in [" ", "?", "r", "R"]:
                             if (row_index, col_index, "3H") not in possibleActions:
                                 possibleActions.append((row_index, col_index, "3H"))
 
+                        # middle piece
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, 2), (1, 2), (1, 1), (1, 0), (1, -1), (1, -2), (0, -2)]]) \
+                            and board.get_value(row_index, col_index - 1) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index + 1) in [" ", "?", "r", "R"]:
+                            if (row_index, col_index - 1, "3H") not in possibleActions:
+                                possibleActions.append((row_index, col_index - 1, "3H"))
+
+                        # right piece
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -3), (-1, -2), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (1, -2), (1, -3), (0, -3)]]) \
+                            and board.get_value(row_index, col_index - 2) in [" ", "?", "l", "L"] and board.get_value(row_index, col_index - 1) in [" ", "?", "m", "M"]:
+                            if (row_index, col_index - 2, "3H") not in possibleActions:
+                                possibleActions.append((row_index, col_index - 2, "3H"))
+
                     if board.unplaced_twos > 0:
-                        # vertical
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1 , 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1)]]) \
-                                and board.get_value(row_index + 1, col_index) in [" ", "?", "b", "B"] and board.get_value(row_index + 2, col_index) in [" ", ".", None]:# and col_info[col_index] >= 2:
+                        # vertical 
+                        # top
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1 , 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1)]]) \
+                                and board.get_value(row_index + 1, col_index) in [" ", "?", "b", "B"]:# and col_info[col_index] >= 2:
                             if (row_index, col_index, "2V") not in possibleActions:
                                 possibleActions.append((row_index, col_index, "2V"))
+
+                        # bottom
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1 , 1), (2, 1), (2, 0), (2, -1), (1, -1)]]) \
+                                and board.get_value(row_index - 1, col_index) in [" ", "?", "t", "T"]:# and col_info[col_index] >= 2:
+                            if (row_index - 1, col_index, "2V") not in possibleActions:
+                                possibleActions.append((row_index - 1, col_index, "2V"))
+                        
                         #horizontal
-                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None] for check in [(0, -1), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, 2), (1, 2), (1, 1), (1, 0), (1, -1)]]) \
-                                and board.get_value(row_index, col_index + 1) in [" ", "?", "r", "R"] and board.get_value(row_index, col_index + 2) in [" ", ".", None]:# and row_info[row_index] >= 2:
+                        # left
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(0, -1), (-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, 2), (1, 2), (1, 1), (1, 0), (1, -1)]]) \
+                                and board.get_value(row_index, col_index + 1) in [" ", "?", "r", "R"]:# and row_info[row_index] >= 2:
                             if (row_index, col_index, "2H") not in possibleActions:
                                 possibleActions.append((row_index, col_index, "2H"))
+
+                        # right
+                        if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(0, 1), (-1, 1), (-1, 0), (-1, -1), (-1, -2), (0, -2), (1, -2), (1, -1), (1, 0), (1, 1)]]) \
+                                and board.get_value(row_index, col_index - 1) in [" ", "?", "l", "L"]:# and row_info[row_index] >= 2:
+                            if (row_index, col_index - 1, "2H") not in possibleActions:
+                                possibleActions.append((row_index, col_index - 1, "2H"))
+
+                    if board.unplaced_ones > 0:
+                        if row_index == col_index == 5:
+                            print([board.get_value(x[0], x[1]) in [".", " ", None, "W"] for x in board.get_surroundings(row_index, col_index)])
+                        if all([board.get_value(x[0], x[1]) in [".", " ", None, "W"] for x in board.get_surroundings(row_index, col_index)]):
+                            if (row_index, col_index, "1") not in possibleActions:
+                                possibleActions.append((row_index, col_index, "1"))
+                    
+                    if row_info[row_index] < row.count(" "):
+                        if (row_index, col_index, ".") not in possibleActions:
+                            possibleActions.append((row_index, col_index, "."))
+                    
 
 
         return possibleActions
@@ -587,6 +633,10 @@ class Bimaru(Problem):
             newState.board.place_three(action[0], action[1], True)
         elif action[2] == "3H":
             newState.board.place_three(action[0], action[1], False)
+        elif action[2] == "4V":
+            newState.board.place_four(action[0], action[1], True)
+        elif action[2] == "4H":
+            newState.board.place_four(action[0], action[1], False)
 
         newState.board.fill_water()
         newState.board.handle_boats()
@@ -663,13 +713,22 @@ if __name__ == "__main__":
     #board.print_board()
     problem = Bimaru(Board)
     s0 = BimaruState(board)
-    print(s0.board.print_board())
-    print(problem.actions(s0))
-    #s1 = problem.result(s0, (4, 4, '3H'))
-
-    #print(s1.board.print_board())
     
-    print("Is goal?", problem.goal_test(s0))
+    #print(s0.board.print_board())
+    #print(problem.actions(s0))
+    
+    
+    
+    s1 = problem.result(s0, (5, 9, '4V'))
+    s2 = problem.result(s1, (5, 1, '3H'))
+    s3 = problem.result(s2, (8, 0, '3H'))
+    s4 = problem.result(s3, (3, 1, '2H'))
+    s5 = problem.result(s4, (3, 8, '2H'))
+    s6 = problem.result(s5, (8, 4, '2H'))
+    print(s6.board.print_board())
+    print(problem.actions(s6))
+    
+    print("Is goal?", problem.goal_test(s6))
 
     print(board.unplaced_ones)
     print(board.unplaced_twos)
