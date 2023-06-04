@@ -510,7 +510,7 @@ class Bimaru(Problem):
 
         for row_index, row in enumerate(cells):
             for col_index, cell in enumerate(row):
-                if cell in ["?", " ", "M"]:
+                if cell in ["?", " "]:
                     if board.unplaced_fours > 0:
 
                         #vertical
