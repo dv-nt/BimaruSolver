@@ -2,7 +2,7 @@
 # Devem alterar as classes e funções neste ficheiro de acordo com as instruções do enunciado.
 # Além das funções e classes já definidas, podem acrescentar outras que considerem pertinentes.
 
-# Grupo 00:
+# Grupo al007:
 # 103796 Tomás Sobral Teixeira
 # 103378 Bernardo Cunha Meireles
 
@@ -363,12 +363,12 @@ class Board:
             board.m_hint(hint[0], hint[1])
 
     def print_board(self):
-        print("  " + " ".join([str(x) for x in self.col_info]))
-        for i in range(len(self.cells)):
-            print(str(self.row_info[i]) + " " + " ".join(self.cells[i]))
-
+        #print("  " + " ".join([str(x) for x in self.col_info]))
         #for i in range(len(self.cells)):
-        #    print("".join(self.cells[i]), sep="")
+        #    print(str(self.row_info[i]) + " " + " ".join(self.cells[i]))
+
+        for i in range(len(self.cells)):
+            print("".join(self.cells[i]), sep="")
 
     def place_one(self, row: int, col: int):
         self.set_value(row, col, "c")
