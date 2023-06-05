@@ -1,0 +1,5 @@
+ROW	2	1	2	3	4	0	3	4	1	0
+COLUMN 	3	0	7	0	0	5	0	2	1	2
+2
+HINT	4	8	L
+HINT	7	7	W
