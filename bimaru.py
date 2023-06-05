@@ -466,7 +466,6 @@ class Board:
                 board.l_hint(int(hintLine[1]), int(hintLine[2]))
             elif hintLine[3] == "M":
                 board.to_run_m_hints.append((int(hintLine[1]), int(hintLine[2])))
-        
 
         return board
 
@@ -515,31 +514,35 @@ class Bimaru(Problem):
 
                         #vertical
                         # top piece
+
                         
+                            
                         if cell not in ["m", "M"] and all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (4, 0), (4, -1), (3, -1), (2, -1), (1, -1), (0, -1), (-1, -1)]]) \
-                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 3, col_index) in [" ", "?", "r", "R"] \
-                            and col_info[col_index] + piece_positions_in_column[col_index] >= 4 and all([row_info[row_index + add] + row.count("?") >= 1 for add in [1, 2, 3]]):
+                            and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 3, col_index) in [" ", "?", "b", "B"] \
+                            and col_info[col_index] + piece_positions_in_column[col_index] >= 4 and all([row_info[row_index + add] + cells[row_index + add].count("?") >= 1 for add in [1, 2, 3]]):
                                 if (row_index, col_index, "4V") not in possibleActions:
                                     possibleActions.append((row_index, col_index, "4V"))
 
                         # top middle piece
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-2, -1), (-2, 0), (-2, 1), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (3, -1), (2, -1), (1, -1), (0, -1), (-1, -1)]]) \
                             and board.get_value(row_index - 1, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "b", "B"] \
-                            and col_info[col_index] + piece_positions_in_column[col_index] >= counter and all([row_info[row_index + add] + row.count("?") >= 1 for add in [-1, 1, 2]]):
+                            and col_info[col_index] + piece_positions_in_column[col_index] >= counter and all([row_info[row_index + add] + cells[row_index + add].count("?") >= 1 for add in [-1, 1, 2]]):
                                 if (row_index - 1, col_index, "4V") not in possibleActions:
                                     possibleActions.append((row_index - 1, col_index, "4V"))
 
                         # bottom middle piece
+
+                            
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-3, -1), (-3, 0), (-3, 1), (-2, 1), (-1, 1), (0, 1), (1, 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1), (-1, -1), (-2, -1)]]) \
                             and board.get_value(row_index - 2, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index - 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 1, col_index) in [" ", "?", "b", "B"] \
-                            and col_info[col_index] + piece_positions_in_column[col_index] >= counter and all([row_info[row_index + add] + row.count("?") >= 1 for add in [-2, -1, 1]]):
+                            and col_info[col_index] + piece_positions_in_column[col_index] >= counter and all([row_info[row_index + add] + cells[row_index + add].count("?") >= 1 for add in [-2, -1, 1]]):
                             if (row_index - 2, col_index, "4V") not in possibleActions:
                                 possibleActions.append((row_index - 2, col_index, "4V"))
                         
                         # bottom piece
                         if cell not in ["m", "M"] and all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-4, -1), (-4, 0), (-4, 1), (-3, 1), (-2, 1), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-2, -1), (-3, -1)]]) \
                             and board.get_value(row_index - 3, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index - 2, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index - 1, col_index) in [" ", "?", "b", "B"] \
-                            and col_info[col_index] + piece_positions_in_column[col_index] >= 4 and all([row_info[row_index + add] + row.count("?") >= 1 for add in [-3, -2, -1]]):
+                            and col_info[col_index] + piece_positions_in_column[col_index] >= 4 and all([row_info[row_index + add] + cells[row_index + add].count("?") >= 1 for add in [-3, -2, -1]]):
                             if (row_index - 3, col_index, "4V") not in possibleActions:
                                 possibleActions.append((row_index - 3, col_index, "4V"))
                         
@@ -584,21 +587,21 @@ class Bimaru(Problem):
 
                         if cell not in ["m", "M"] and all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (3, -1), (2, -1), (1, -1), (0, -1)]]) \
                             and board.get_value(row_index + 1, col_index) in [" ", "?", "m", "M"] and board.get_value(row_index + 2, col_index) in [" ", "?", "b", "B"] \
-                            and col_info[col_index] + piece_positions_in_column[col_index] >= 3 and all([row_info[row_index + add] + row.count("?") >= 1 for add in [1, 2]]):
+                            and col_info[col_index] + piece_positions_in_column[col_index] >= 3 and all([row_info[row_index + add] + cells[row_index + add].count("?") >= 1 for add in [1, 2]]):
                             if (row_index, col_index, "3V") not in possibleActions:
                                 possibleActions.append((row_index, col_index, "3V"))
 
                         # middle piece
                         if all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-2, -1), (-2, 0), (-2, 1), (-1, 1), (0, 1), (1, 1), (2, 1), (2, 0), (2, -1), (1, -1), (0, -1), (-1, -1)]]) \
                             and board.get_value(row_index - 1, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index + 1, col_index) in [" ", "?", "b", "B"] \
-                            and col_info[col_index] + piece_positions_in_column[col_index] >= counter and all([row_info[row_index + add] + row.count("?") >= 1 for add in [-1, 1]]):
+                            and col_info[col_index] + piece_positions_in_column[col_index] >= counter and all([row_info[row_index + add] + cells[row_index + add].count("?") >= 1 for add in [-1, 1]]):
                             if (row_index - 1, col_index, "3V") not in possibleActions:
                                 possibleActions.append((row_index - 1, col_index, "3V"))
 
                         # bottom piece
                         if cell not in ["m", "M"] and all([board.get_value(row_index + check[0], col_index + check[1]) in [".", " ", None, "W"] for check in [(-3, -1), (-3, 0), (-3, 1), (-2, 1), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-2, -1)]]) \
                             and board.get_value(row_index - 2, col_index) in [" ", "?", "t", "T"] and board.get_value(row_index - 1, col_index) in [" ", "?", "m", "M"] \
-                            and col_info[col_index] + piece_positions_in_column[col_index] >= 3 and all([row_info[row_index + add] + row.count("?") >= 1 for add in [-2, -1]]):
+                            and col_info[col_index] + piece_positions_in_column[col_index] >= 3 and all([row_info[row_index + add] + cells[row_index + add].count("?") >= 1 for add in [-2, -1]]):
                             if (row_index - 2, col_index, "3V") not in possibleActions:
                                 possibleActions.append((row_index - 2, col_index, "3V"))
 
